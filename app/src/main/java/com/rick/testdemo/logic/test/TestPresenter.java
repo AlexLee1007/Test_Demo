@@ -1,8 +1,7 @@
-package com.rick.testdemo.test;
+package com.rick.testdemo.logic.test;
 
-import com.rick.testdemo.MainActivity;
 import com.rick.testdemo.base.BasePresenter;
-import com.rick.testdemo.entity.BaseEntity;
+import com.rick.testdemo.ui.MainActivity;
 
 /**
  * package: TestPresenter
@@ -12,7 +11,7 @@ import com.rick.testdemo.entity.BaseEntity;
  */
 
 
-public class TestPresenter extends BasePresenter<MainActivity,TestModel,TestContract.Presenter> {
+public class TestPresenter extends BasePresenter<MainActivity, TestModel, TestContract.Presenter> {
 
     @Override
     public TestContract.Presenter getContract() {

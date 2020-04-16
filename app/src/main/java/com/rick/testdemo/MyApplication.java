@@ -1,10 +1,11 @@
 package com.rick.testdemo;
 
 import android.app.Application;
-import android.os.Build;
 
-import androidx.annotation.RequiresApi;
-
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.FormatStrategy;
+import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.PrettyFormatStrategy;
 import com.rick.testdemo.retrofit.RetrofitUtility;
 
 /**
@@ -21,5 +22,14 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         RetrofitUtility.getInstance().init();
+
+        FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
+                .showThreadInfo(false)
+                .methodCount(0)
+                .methodOffset(7)
+                .tag(Constant.TAG)
+                .build();
+
+        Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
     }
 }

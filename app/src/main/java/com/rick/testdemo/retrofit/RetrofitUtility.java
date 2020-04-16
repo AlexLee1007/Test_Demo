@@ -1,10 +1,20 @@
 package com.rick.testdemo.retrofit;
 
+import android.util.Log;
+
+import com.orhanobut.logger.Logger;
 import com.rick.testdemo.BuildConfig;
+import com.rick.testdemo.Constant;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -51,44 +61,36 @@ public class RetrofitUtility {
 
     public void createOkhttpClinet() {
         builder = new OkHttpClient.Builder()
-                .connectTimeout(1000 * 90 * 1, TimeUnit.MILLISECONDS)
-                .readTimeout(1000 * 90 * 1, TimeUnit.MILLISECONDS)
-                .writeTimeout(1000 * 90 * 1, TimeUnit.MILLISECONDS);
+                .connectTimeout(Constant.REQUEST_NETWORK_TIME, TimeUnit.MILLISECONDS)
+                .readTimeout(Constant.REQUEST_NETWORK_TIME, TimeUnit.MILLISECONDS)
+                .writeTimeout(Constant.REQUEST_NETWORK_TIME, TimeUnit.MILLISECONDS);
         builder.addInterceptor(chain -> {
-
             Request original = chain.request();
+            if (BuildConfig.DEBUG) {
+                JSONObject json = new JSONObject();
+                Long startTime = System.currentTimeMillis(); //开始时间
+                Response response = chain.proceed(chain.request());
+                Long endTime = System.currentTimeMillis(); //结束时间
+                long duration = endTime - startTime;
+                //获取请求参数
+                FormBody formBody = (FormBody) original.body();
+                try {
+                    for (int i = 0; i < formBody.size(); i++) {
+                        json.put(formBody.encodedName(i), formBody.encodedValue(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-//            String timeStamp = "";
-//            String sign = "";
-//            String signBase = "";
-
-//            //获取
-//            long currentTime = System.currentTimeMillis();
-//            SimpleDateFormat sdf = new SimpleDateFormat("YYMMDDHHMMSS");
-//            timeStamp = sdf.format(new Date(currentTime));
-//
-//            //获取请求中的业务参数
-//            FormBody formBody = (FormBody) original.body();
-//            JSONObject js = new JSONObject();
-//            for (int i = 0; i < formBody.size(); i++) {
-//                try {
-//                    js.put(formBody.encodedName(i), formBody.encodedValue(i));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            //添加POST 头部参数
-//            signBase = Base64.getEncoder().encodeToString(js.toString().getBytes("UTF-8"));
-//            Log.i("TAG", js.toString() + ":" + signBase);
-//
-//            sign = EncryptUtils.encryptHmacMD5ToString(signBase, timeStamp + ".west");
-//
-            Request.Builder builde = original.newBuilder();
-//                    .addHeader("timeStamp", timeStamp)
-//                    .addHeader("sign", sign);
-
-            return chain.proceed(builde.build());
+                Logger.i(String.format("请求地址=========> %s\n请求方式=========> %s", original.url(), original.method()));
+                Log.i(Constant.TAG, "====================> 请求参数");
+                Logger.json(json.toString());
+                Log.i(Constant.TAG, "====================> 响应参数");
+                Logger.json(response.body().string());
+                Logger.i("=========> 请求耗时:" + duration + "毫秒 <=========");
+                json = null; //用完回收对象 程序计数器置空
+            }
+            return chain.proceed(original.newBuilder().build());
         });
 
 
@@ -100,15 +102,15 @@ public class RetrofitUtility {
         mClient = builder.build();
     }
 
-
     public Retrofit createRetrofit(OkHttpClient client) {
         mRetrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl("http://sxxby.xicp.io")
+                .baseUrl(Constant.HTTP_REQUEST_IP)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         return mRetrofit;
+
     }
 
 

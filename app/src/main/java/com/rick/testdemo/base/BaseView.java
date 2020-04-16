@@ -36,8 +36,7 @@ public abstract class BaseView<P extends BasePresenter, CONTRACT> extends Activi
     public abstract P getPresenter();
 
 
-    public void error(Exception e) {
-    }
+    public abstract void error(Exception e);
 
 
     @Override

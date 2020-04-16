@@ -1,7 +1,6 @@
-package com.rick.testdemo;
+package com.rick.testdemo.ui;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,11 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+import com.rick.testdemo.R;
 import com.rick.testdemo.base.BaseView;
-import com.rick.testdemo.entity.BaseEntity;
-import com.rick.testdemo.test.TestContract;
-import com.rick.testdemo.test.TestModel;
-import com.rick.testdemo.test.TestPresenter;
+import com.rick.testdemo.logic.test.TestContract;
+import com.rick.testdemo.logic.test.TestPresenter;
 
 public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
 
@@ -59,6 +58,12 @@ public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
     @Override
     public TestPresenter getPresenter() {
         return new TestPresenter();
+    }
+
+
+    @Override
+    public void error(Exception e) {
+        Logger.e(e.getMessage());
     }
 
 }

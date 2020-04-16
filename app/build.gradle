@@ -1,14 +1,18 @@
 apply plugin: 'com.android.application'
 
+def androidId = rootProject.ext.androidId
+def appId = rootProject.ext.appId
+def support = rootProject.ext.dependencies
+
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.0"
+    compileSdkVersion androidId.compileSdkVersion
+    buildToolsVersion androidId.buildToolsVersion
     defaultConfig {
-        applicationId "com.rick.testdemo"
-        minSdkVersion 22
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        applicationId appId.applicationId
+        minSdkVersion androidId.minSdkVersion
+        targetSdkVersion androidId.targetSdkVersion
+        versionCode androidId.versionCode
+        versionName androidId.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -30,18 +34,17 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    implementation 'com.blankj:utilcode:1.11.1'
-    //RxJava
-    implementation "io.reactivex.rxjava2:rxjava:2.0.7"
-    implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
+    implementation 'com.orhanobut:logger:2.2.0'
     //Retfit
-    implementation "com.squareup.retrofit2:retrofit:2.1.0"
+    implementation support["retrofit"]
     //RxJava适配器
-    implementation "com.squareup.retrofit2:adapter-rxjava2:2.2.0"
+    implementation support["adapterRxjava"]
     //gson
-    implementation "com.squareup.retrofit2:converter-gson:2.1.0"
+    implementation support["gson"]
     //okhttp
-    implementation "com.squareup.okhttp3:okhttp:3.4.1"
-    implementation "com.squareup.okhttp3:logging-interceptor:3.4.1"
+    implementation support["okhttp"]
+    implementation support["logging"]
+    //RxJava
+    implementation support["rxjava"]
+    implementation support["rxandroid"]
 }

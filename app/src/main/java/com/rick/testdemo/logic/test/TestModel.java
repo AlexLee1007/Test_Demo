@@ -1,30 +1,11 @@
-package com.rick.testdemo.test;
+package com.rick.testdemo.logic.test;
 
-import android.os.Build;
-import android.util.Log;
-
-import androidx.annotation.RequiresApi;
-
+import com.orhanobut.logger.Logger;
 import com.rick.testdemo.base.BaseModel;
+import com.rick.testdemo.base.CommonSchedulers;
+import com.rick.testdemo.base.RxSubscriber;
 import com.rick.testdemo.entity.BaseEntity;
 import com.rick.testdemo.retrofit.RetrofitUtility;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * package: TestModel
@@ -49,14 +30,19 @@ public class TestModel extends BaseModel<TestPresenter, TestContract.Model> {
             public void executeMsgQuery(String id) {
                 RetrofitUtility.getInstance().create(TestApiService.class)
                         .queryMsgResult(id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<BaseEntity>() {
+                        .compose(CommonSchedulers.ioTomain())
+                        .subscribe(new RxSubscriber<BaseEntity>() {
                             @Override
-                            public void accept(BaseEntity baseEntity) throws Exception {
+                            public void rx_next(BaseEntity baseEntity, String msg) {
                                 mPresenter.getContract().responseMsgResult(baseEntity.toString());
                             }
+
+                            @Override
+                            public void rx_Error() {
+
+                            }
                         });
+
             }
         };
 

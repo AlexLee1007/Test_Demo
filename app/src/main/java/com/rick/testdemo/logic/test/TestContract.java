@@ -1,4 +1,4 @@
-package com.rick.testdemo.test;
+package com.rick.testdemo.logic.test;
 
 import com.rick.testdemo.entity.BaseEntity;
 
