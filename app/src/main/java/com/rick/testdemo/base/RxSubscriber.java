@@ -1,7 +1,5 @@
 package com.rick.testdemo.base;
 
-import android.widget.Toast;
-
 import com.rick.testdemo.entity.BaseEntity;
 
 import io.reactivex.Observer;
@@ -31,17 +29,16 @@ public abstract class RxSubscriber<T> implements Observer<T> {
 
     @Override
     public void onError(Throwable e) {
-        rx_Error();
+        rx_Error(e);
     }
 
     @Override
     public void onComplete() {
-
     }
 
     public abstract void rx_next(T t, String msg);
 
-    public abstract void rx_Error();
+    public abstract void rx_Error(Throwable e);
 
 
 }

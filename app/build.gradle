@@ -47,4 +47,8 @@ dependencies {
     //RxJava
     implementation support["rxjava"]
     implementation support["rxandroid"]
+    // mmkv
+    implementation support["mmkv"]
+    //LiveDataEevent
+    implementation support["LiveDataEevent"]
 }

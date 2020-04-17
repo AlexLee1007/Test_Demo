@@ -9,9 +9,9 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * RxJava通用线程转换调度
  */
-public class CommonSchedulers {
+public class RxSchedulers {
 
-    public static <T> ObservableTransformer<T, T> ioTomain() {
+    public static <T> ObservableTransformer<T, T> ioToMain() {
         return new ObservableTransformer<T, T>() {
             @Override
             public ObservableSource<T> apply(Observable<T> upstream) {

@@ -81,7 +81,6 @@ public class RetrofitUtility {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
                 Logger.i(String.format("请求地址=========> %s\n请求方式=========> %s", original.url(), original.method()));
                 Log.i(Constant.TAG, "====================> 请求参数");
                 Logger.json(json.toString());
@@ -101,6 +100,7 @@ public class RetrofitUtility {
         }
         mClient = builder.build();
     }
+
 
     public Retrofit createRetrofit(OkHttpClient client) {
         mRetrofit = new Retrofit.Builder()

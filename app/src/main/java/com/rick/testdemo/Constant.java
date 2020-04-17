@@ -2,7 +2,7 @@ package com.rick.testdemo;
 
 public class Constant {
 
-    public static String TAG = "Rick_Log";
+    public static String TAG = "RICK_LOG";
 
     public static String HTTP_REQUEST_IP = "http://sxxby.xicp.io";
 
