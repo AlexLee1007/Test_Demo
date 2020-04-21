@@ -22,9 +22,8 @@ public abstract class RxSubscriber<T> implements Observer<T> {
         if (t instanceof BaseEntity) {
             BaseEntity be = (BaseEntity) t;
             this.rx_next((T) be, "");
-        } else {
-
         }
+        this.rx_next(t, "");
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.rick.testdemo.entity.BaseEntity;
 import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**

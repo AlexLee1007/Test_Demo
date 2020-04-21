@@ -24,8 +24,21 @@
 
     <Button
         android:id="@+id/main_openCamera"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="点击开启相机"></Button>
+
+    <Button
+        android:id="@+id/main_addUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="点击添加数据信息"></Button>
+
+    <Button
+        android:id="@+id/main_delUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="点击删除数据信息"></Button>
+
 
 </LinearLayout>

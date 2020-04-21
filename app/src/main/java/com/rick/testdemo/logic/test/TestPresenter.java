@@ -1,7 +1,11 @@
 package com.rick.testdemo.logic.test;
 
 import com.rick.testdemo.base.BasePresenter;
+import com.rick.testdemo.entity.RoomEntity;
+import com.rick.testdemo.room.entity.User;
 import com.rick.testdemo.ui.MainActivity;
+
+import java.util.List;
 
 /**
  * package: TestPresenter
@@ -16,6 +20,7 @@ public class TestPresenter extends BasePresenter<MainActivity, TestModel, TestCo
     @Override
     public TestContract.Presenter getContract() {
         return new TestContract.Presenter() {
+
             @Override
             public void requestMsg(String pageNo) {
                 mModel.getContract().executeMsgQuery(pageNo);
@@ -24,6 +29,26 @@ public class TestPresenter extends BasePresenter<MainActivity, TestModel, TestCo
             @Override
             public void responseMsgResult(String str) {
                 getView().getContract().handlerMsgResult(str);
+            }
+
+            @Override
+            public void db_requestDelMsg(User user) {
+                mModel.getContract().db_executeDelMsg(user);
+            }
+
+            @Override
+            public void db_responseDelMsgResult(int index) {
+                getView().getContract().db_handlerDelResult(index);
+            }
+
+            @Override
+            public void db_requestQueryUserMsg() {
+                mModel.getContract().db_exectueQueryUserMsg();
+            }
+
+            @Override
+            public void db_responseQueryUserMsgResult(RoomEntity room) {
+                getView().getContract().db_handlerQueryUserMsg(room);
             }
         };
     }

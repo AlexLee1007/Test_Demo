@@ -20,6 +20,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug{
+            resValue("string","room_dev","8081")
+        }
     }
     compileOptions {
         sourceCompatibility = 1.8
@@ -51,4 +54,16 @@ dependencies {
     implementation support["mmkv"]
     //LiveDataEevent
     implementation support["LiveDataEevent"]
+    //Room
+    implementation support["room"]
+    // implementation support["roomktx"]
+    implementation support["roomRxjava"]
+    implementation support["roomGuava"]
+    annotationProcessor support["roomCompiler"]
+    testImplementation support["roomTesting"]
+
+
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+    debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+
 }

@@ -1,4 +1,4 @@
-package com.rick.testdemo.retrofit;
+package com.rick.testdemo.network;
 
 import android.util.Log;
 

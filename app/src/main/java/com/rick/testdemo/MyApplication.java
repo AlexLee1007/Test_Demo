@@ -2,15 +2,18 @@ package com.rick.testdemo;
 
 import android.app.Application;
 
+import androidx.room.Room;
+
 import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
 import com.rick.testdemo.base.CrashHandler;
-import com.rick.testdemo.retrofit.RetrofitUtility;
+import com.rick.testdemo.network.RetrofitUtility;
+import com.rick.testdemo.room.database.AppDatabase;
+import com.rick.testdemo.utlis.DataBaseUtils;
 import com.rick.testdemo.utlis.MMKVUtils;
-import com.rick.testdemo.utlis.xxpermissions.XXPermissions;
 
 /**
  * package: MyApplication
@@ -21,6 +24,8 @@ import com.rick.testdemo.utlis.xxpermissions.XXPermissions;
 
 
 public class MyApplication extends Application {
+
+    private AppDatabase mDataBase;
 
     @Override
     public void onCreate() {
@@ -40,5 +45,6 @@ public class MyApplication extends Application {
                 .tag(Constant.TAG)
                 .build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
+        DataBaseUtils.getInstance().init(this);
     }
 }

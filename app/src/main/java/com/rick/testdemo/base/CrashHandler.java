@@ -11,9 +11,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.orhanobut.logger.Logger;
+import com.rick.testdemo.utlis.xxpermissions.Permission;
+import com.rick.testdemo.utlis.xxpermissions.XXPermissions;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -92,7 +93,9 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             }
         }.start();
         //保存日志文件
-        saveCrashInfoFile(e);
+        if (XXPermissions.isHasPermission(mContext, Permission.Group.STORAGE)) {
+            saveCrashInfoFile(e);
+        }
         return true;
     }
 
@@ -154,7 +157,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             String time = sdf.format(new Date());
             String fileName = String.format("crash-%s-%s.log", time, timestamp);
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                String path = mContext.getFilesDir() + "/testdemo/log/";
+                String path = Environment.getExternalStorageDirectory() + "/testdemo/log/";
                 File dir = new File(path);
                 if (!dir.exists()) {
                     dir.mkdirs();
@@ -164,16 +167,16 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                         File temp = new File(dir, name);
                         temp.delete();
                     }
-                    //      Logger.i("File Url:" + path + fileName);
+                    //Logger.i("File Url:" + path + fileName);
                 }
-                //    Logger.i("File Url:" + path + fileName);
+                // Logger.i("File Url:" + path + fileName);
                 FileOutputStream fos = new FileOutputStream(path + fileName);
                 fos.write(sb.toString().getBytes());
                 fos.close();
             }
             return fileName;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            // ex.printStackTrace();
             Logger.e("an error occured while writing file...", ex);
         }
         return null;
