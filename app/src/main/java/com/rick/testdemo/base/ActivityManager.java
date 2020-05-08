@@ -55,6 +55,16 @@ public class ActivityManager {
     }
 
     /**
+     * 移除指定Activity
+     * @param activity
+     */
+    public void removeActivity(Activity activity){
+        if (activity != null) {
+            activityStack.remove(new WeakReference<>(activity));
+        }
+    }
+
+    /**
      * 结束栈顶Activity
      */
     public void finishTopActivity() {
@@ -71,7 +81,6 @@ public class ActivityManager {
     public void finishActivity(Activity activity) {
         if (activity != null) {
             activity.finish();
-            activityStack.remove(new WeakReference<>(activity));
         }
     }
 

@@ -1,8 +1,6 @@
 package com.rick.testdemo.ui;
 
-import androidx.annotation.Nullable;
-import androidx.room.util.DBUtil;
-
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,10 +15,12 @@ import com.amitshekhar.DebugDB;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.orhanobut.logger.Logger;
 import com.rick.testdemo.R;
+import com.rick.testdemo.base.ActivityManager;
 import com.rick.testdemo.base.BaseView;
 import com.rick.testdemo.entity.RoomEntity;
 import com.rick.testdemo.logic.test.TestContract;
 import com.rick.testdemo.logic.test.TestPresenter;
+import com.rick.testdemo.network.RetrofitUtility;
 import com.rick.testdemo.room.entity.User;
 import com.rick.testdemo.utlis.xxpermissions.OnPermission;
 import com.rick.testdemo.utlis.xxpermissions.Permission;
@@ -28,42 +28,50 @@ import com.rick.testdemo.utlis.xxpermissions.XXPermissions;
 
 import java.util.List;
 
-public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private Button main_btn;
-    private TextView main_tv;
-    private Button main_openCamera;
-    private Button main_addUser;
-    private Button main_delUser;
+public class MainActivity extends BaseView<TestPresenter, TestContract.View> implements View.OnClickListener {
+
+
+    @BindView(R.id.main_btn)
+    Button mainBtn;
+    @BindView(R.id.main_tv)
+    TextView mainTv;
+    @BindView(R.id.main_openCamera)
+    Button mainOpenCamera;
+    @BindView(R.id.main_addUser)
+    Button mainAddUser;
+    @BindView(R.id.main_delUser)
+    Button mainDelUser;
+    @BindView(R.id.main_toBlueTootch)
+    Button mainToBlueTootch;
+    @BindView(R.id.main_baiduRTC)
+    Button mainBaiduRTC;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void initCreate() {
         initPermissions();
-        initView();
-        initListener();
+        mainBaiduRTC.setOnClickListener(this::onClick);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+            //    RetrofitUtility.getInstance().createWebSocket();
+            }
+        }).start();
+
     }
 
     @Override
-    public void LdBusListener(String s) {
-        Logger.i(this.getClass().getName() + s);
+    protected int getContextView() {
+        return R.layout.activity_main;
     }
 
-
-    private void initView() {
-        main_btn = this.findViewById(R.id.main_btn);
-        main_tv = this.findViewById(R.id.main_tv);
-        main_openCamera = this.findViewById(R.id.main_openCamera);
-        main_addUser = this.findViewById(R.id.main_addUser);
-        main_delUser = this.findViewById(R.id.main_delUser);
-    }
-
-    private void initListener() {
-        TextView tvDebugTest = null;
-        main_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
+        User user = new User();
+        switch (v.getId()) {
+            case R.id.main_btn:
                 //测试网络请求
                 mPresenter.getContract().requestMsg("1");
                 //测试MMKV持久化储存
@@ -71,21 +79,12 @@ public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
 //                Logger.i(MMKVUtils.getInstance().getDecodeString("key"));
                 //测试报错日志收集
                 //tvDebugTest.setText("sssssssss");
-            }
-        });
-
-        main_openCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.main_openCamera:
                 openCamera();
-            }
-        });
-
-        main_addUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.main_addUser:
                 Logger.i(DebugDB.getAddressLog());
-                User user = new User();
                 user.firstName = "hhhhhss";
                 user.lastName = "eeeeee";
 //                DataBaseUtils.getInstance()
@@ -94,35 +93,65 @@ public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
 //                        .insertUsers(user);
 
                 mPresenter.getContract().db_requestQueryUserMsg();
-            }
-        });
-
-        main_delUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                User user = new User();
+                break;
+            case R.id.main_delUser:
                 user.id = 126;
                 user.firstName = "hhhhh";
                 user.lastName = "eeeeee";
                 mPresenter.getContract().db_requestDelMsg(user);
-            }
-        });
-
+                break;
+            case R.id.main_toBlueTootch:
+                Intent intent = new Intent(this, BluetoothActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.main_baiduRTC:
+                openBaiduRTC();
+                break;
+        }
     }
+
+    public void openBaiduRTC() {
+        XXPermissions.with(this).constantRequest().permission(
+                Permission.RECORD_AUDIO,
+                Permission.CAMERA,
+                Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                Manifest.permission.ACCESS_WIFI_STATE)
+                .request(new OnPermission() {
+                    @Override
+                    public void hasPermission(List<String> granted, boolean all) {
+                        //权限申请成功
+                        Intent intent = new Intent(MainActivity.this, BaiduRtcActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void noPermission(List<String> denied, boolean quick) {
+                        //权限申请失败
+                        Toast.makeText(MainActivity.this, "权限开启失败!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
     private void initPermissions() {
-        XXPermissions.with(this).constantRequest().permission(Permission.Group.STORAGE).request(new OnPermission() {
-            @Override
-            public void hasPermission(List<String> granted, boolean all) {
-                //权限申请成功
-            }
-
-            @Override
-            public void noPermission(List<String> denied, boolean quick) {
-                //权限申请失败
-            }
-        });
+//        XXPermissions.with(this).constantRequest().permission(
+//                Permission.READ_EXTERNAL_STORAGE,
+//                Permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.ACCESS_COARSE_LOCATION,
+//                Manifest.permission.ACCESS_FINE_LOCATION)
+//                .request(new OnPermission() {
+//                    @Override
+//                    public void hasPermission(List<String> granted, boolean all) {
+//                        //权限申请成功
+//                    }
+//
+//                    @Override
+//                    public void noPermission(List<String> denied, boolean quick) {
+//                        //权限申请失败
+//                    }
+//                });
     }
+
 
     /**
      * 开启相机
@@ -167,7 +196,6 @@ public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
             @Override
             public void handlerMsgResult(String str) {
                 Toast.makeText(MainActivity.this, str, Toast.LENGTH_LONG).show();
-                main_tv.setText(str);
                 LiveEventBus.get("requestStatus").post(str);
             }
 
@@ -193,6 +221,12 @@ public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
     }
 
     @Override
+    public void LdBusListener(String s) {
+        super.LdBusListener(s);
+        Logger.i(this.getClass().getName() + s);
+    }
+
+    @Override
     public TestPresenter getPresenter() {
         return new TestPresenter();
     }
@@ -200,7 +234,7 @@ public class MainActivity extends BaseView<TestPresenter, TestContract.View> {
 
     @Override
     public void error(Exception e) {
-        Logger.e(e.getMessage());
     }
+
 
 }

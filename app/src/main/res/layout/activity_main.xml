@@ -40,5 +40,17 @@
         android:layout_height="wrap_content"
         android:text="点击删除数据信息"></Button>
 
+    <Button
+        android:id="@+id/main_toBlueTootch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳转蓝牙页面"></Button>
+
+    <Button
+        android:id="@+id/main_baiduRTC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳转BaiduRTC"></Button>
+
 
 </LinearLayout>

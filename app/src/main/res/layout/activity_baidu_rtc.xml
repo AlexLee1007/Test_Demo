@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.BaiduRtcActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="openChat"
+            android:text="登录房间"></Button>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+
+        <com.baidu.rtc.RTCVideoView
+            android:id="@+id/local_rtc_video_view"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"></com.baidu.rtc.RTCVideoView>
+
+
+        <com.baidu.rtc.RTCVideoView
+            android:id="@+id/remote_rtc_video_view"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"></com.baidu.rtc.RTCVideoView>
+    </LinearLayout>
+
+</LinearLayout>

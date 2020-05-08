@@ -5,6 +5,7 @@ import android.util.Log;
 import com.orhanobut.logger.Logger;
 import com.rick.testdemo.BuildConfig;
 import com.rick.testdemo.Constant;
+import com.rick.testdemo.utlis.MockWebSockets;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +16,11 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.mockwebserver.MockWebServer;
+import okio.ByteString;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -60,10 +65,11 @@ public class RetrofitUtility {
 
 
     public void createOkhttpClinet() {
-        builder = new OkHttpClient.Builder()
+        builder = new OkHttpClient.Builder().pingInterval(40, TimeUnit.SECONDS)
                 .connectTimeout(Constant.REQUEST_NETWORK_TIME, TimeUnit.MILLISECONDS)
                 .readTimeout(Constant.REQUEST_NETWORK_TIME, TimeUnit.MILLISECONDS)
                 .writeTimeout(Constant.REQUEST_NETWORK_TIME, TimeUnit.MILLISECONDS);
+
         builder.addInterceptor(chain -> {
             Request original = chain.request();
             if (BuildConfig.DEBUG) {
@@ -101,6 +107,15 @@ public class RetrofitUtility {
         mClient = builder.build();
     }
 
+    public void createWebSocket() {
+        MockWebSockets mws = new MockWebSockets();
+        String hostName = mws.mockWebServer.getHostName();
+        int port = mws.mockWebServer.getPort();
+        String url = String.format("ws:%s:%s", hostName, port);
+        Request request = new Request.Builder().url(url).build();
+        mClient.newWebSocket(request, new EchoWebSocketListener());
+    }
+
 
     public Retrofit createRetrofit(OkHttpClient client) {
         mRetrofit = new Retrofit.Builder()
@@ -110,12 +125,51 @@ public class RetrofitUtility {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         return mRetrofit;
-
     }
 
 
     public <T> T create(Class<T> service) {
         return mRetrofit.create(service);
+    }
+
+
+    private final class EchoWebSocketListener extends WebSocketListener {
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            super.onOpen(webSocket, response);
+            Logger.i("连接创建成功!");
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+            Logger.i("收到新消息!");
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, ByteString bytes) {
+            super.onMessage(webSocket, bytes);
+            Logger.i("收到新消息Bytes!");
+        }
+
+        @Override
+        public void onClosing(WebSocket webSocket, int code, String reason) {
+            super.onClosing(webSocket, code, reason);
+            Logger.i("服务端主动关闭!");
+        }
+
+        @Override
+        public void onClosed(WebSocket webSocket, int code, String reason) {
+            super.onClosed(webSocket, code, reason);
+            Logger.i("连接关闭!");
+        }
+
+        @Override
+        public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+            super.onFailure(webSocket, t, response);
+            Logger.i("出错了!");
+        }
     }
 
 
